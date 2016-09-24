@@ -62,7 +62,7 @@ app.route('/buy/:amount').get(function(req, res, next) {
     var amount = number * price;
     var description = "Buying " + req.details.type;
 
-    var tenders = ['Saci', 'Jaime', 'Quynh', 'Butler', 'Sandra'];
+    var tenders = ['Saci', 'Jaime', 'Quynh', 'Lorenzo', 'Butler', 'Sandra'];
     var server = tenders[Math.round(Number(Math.random() * (4 - 0) + 0))];
     var tableNumber = Math.round(Number(Math.random() * (20 - 1) + 1));
     var quantity = req.details.number;
