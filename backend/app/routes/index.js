@@ -2,6 +2,7 @@ var express = require('express');
 var simplify = require('simplify-commerce');
 var router = express.Router();
 var app = express();
+var path = require('path');
 
 client = simplify.getClient({
     publicKey: 'sbpb_ODMzZWJjNjQtOWNlMS00MTA3LWI0YzktNTVhYTViZmY2Mjdk',
@@ -10,11 +11,8 @@ client = simplify.getClient({
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('index', { title: 'OpenTap' });
-});
-
-router.get('/quynh', function(req, res, next) {
-    res.send({ alcohol: 'Beer', price: '5.70', currency: 'GBP'});
+  //res.render('index', { title: 'OpenTap' });
+  res.sendFile(path.join(__dirname, '../../../frontend', 'index.html'));
 });
 
 router.param('amount', function(req, res, next, amount) { 
