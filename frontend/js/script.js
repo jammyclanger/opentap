@@ -19,10 +19,13 @@ var formatAmount = function(amount) {
 };
 
 var orderPrice;
+var ageStatusOK = false;
+var paymentStatusOK = false;
 
 var getOrder = function(data) {
         insertItem(data);
 		console.log("get order")
+        
 		var unitprice = parseFloat(data.price);
 		var quantity = parseFloat(data.quantity);
 		orderPrice = getOrderPrice(unitprice, quantity);
@@ -48,25 +51,42 @@ var getOrder = function(data) {
 var getCharacteristics = function(data) {
 		console.log("Get characteristics");
         $("#age" + data.id).html('<img src="img/18-ok.png" height="35" "width="35" />');
+    
 		var discount = parseFloat(data.discount);
 		var discountAmount = getDiscountValue(discount, orderPrice);
-		var total = getTotal(orderPrice, discount);
+		var total = getTotal(orderPrice, discountAmount);
 
     	$("#discount-percent").text(formatDiscount(discount));
-    	$("#discount-title").text("Lady's night");
+    	$("#discount-title").text("Lady's Night Discount");
     	$("#discount-amount").text(formatAmount(discountAmount));
     	$("#price-final").text(formatAmount(total));
 
-    	$("#age-check").attr("src", "img/tick.png")
+    	var ageStatus = data.age;
+    	if (ageStatus == "OK") {
+    		$("#age-check").attr("src", "img/tick.png");
+    		ageStatusOK = true;
+    		if (paymentStatusOK == true) {
+    			//console.log("paymentstatus " + paymentStatusOk);
+				//console.log("ageStatusOK " + ageStatusOK);
+    			$('#process-button').removeClass('disabled');
+    		}
+    	} else {
+    		//TODO ERROR
+    	};
 
         console.log(data);
 };
 
 var getPaymentStatus = function(data) {
-	console.log("get payment status")
 	if (data.status == "OK") {
         $("#paid" + data.id).html('<img src="img/wallet-ok.png" height="35" "width="35" />');
 		$("#balance-check").attr("src", "img/tick.png")
+		paymentStatusOK = true;
+		if (ageStatusOK == true) {
+			//console.log("paymentstatus " + paymentStatusOK);
+			//console.log("ageStatusOK " + ageStatusOK);
+			$('#process-button').removeClass('disabled');
+		}
 	} else {
 		//TODO: red X image
 	}
@@ -89,6 +109,7 @@ var insertItem = function(data) {
                 '</div>' +
                 '<div class="col s1">' +
                     '<div id="amount<<ORDER_ID>>"><<QUANTITY>></div>' +
+                    '<div id="amount<<ORDER_ID>>">4</div>' +
                 '</div>' +
                 '<div class="col s2">' +
                     '<div id="price<<ORDER_ID>>"><<PRICE>></div>' +
@@ -114,6 +135,10 @@ var insertItem = function(data) {
     
     $(".container").append(filled);
 }
+=======
+        '</div>';   
+};
+>>>>>>> 2f4faf2c2ab154bfe40ab79caeeed618a7b3a5c7
 
 var socket = io.connect('http://localhost:4200');
         socket.on('connect', function(data) {
