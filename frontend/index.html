@@ -49,64 +49,29 @@
       </svg>
     <div class="header">The party never ends</div></div>
     <div class="container">
+        <div class="row item" id="item<<ORDER_ID>>">
+            <div class="col s12">
+                <div class="col s2">
+                    <div id="tableNumber<<ORDER_ID>>">#<<TABLE_NUMBER>></div>
+                </div>
+                <div class="col s2">
+                    <div id="paid<<ORDER_ID>>"><img src="img/wallet.png" height="35" width="35" /></div>
+                </div>
+                <div class="col s2">
+                    <div id="age<<ORDER_ID>>"><img src="img/18.png" height="35" width="35" /></div>
+                </div>
+                <div class="col s3">
+                    <div id="server<<ORDER_ID>>">Saci</div>
+                </div>
+                <div class="col s1">
+                    <div id="amount<<ORDER_ID>>">4</div>
+                </div>
+                <div class="col s2">
+                    <div id="price<<ORDER_ID>>">£26.55</div>
+                </div>
+            </div>
+        </div>
 
-        <div class="row item">
-            <div class="col s12">
-                <div class="col s2">
-                    <div id="tableNumber">#12</div>
-                </div>
-                <div class="col s2">
-                    <div id="paid">// TODO</div>
-                </div>
-                <div class="col s2">
-                    <div id="age">// TODO</div>
-                </div>
-                <div class="col s2">
-                    <div id="amount">4</div>
-                </div>
-                <div class="col s2">
-                    <div id="price">£26.55</div>
-                </div>
-            </div>
-        </div>
-        <div class="row item">
-            <div class="col s12">
-                <div class="col s2">
-                    <div id="tableNumber">#12</div>
-                </div>
-                <div class="col s2">
-                    <div id="paid">// TODO</div>
-                </div>
-                <div class="col s2">
-                    <div id="age">// TODO</div>
-                </div>
-                <div class="col s2">
-                    <div id="amount">4</div>
-                </div>
-                <div class="col s2">
-                    <div id="price">£26.55</div>
-                </div>
-            </div>
-        </div>
-        <div class="row item">
-            <div class="col s12">
-                <div class="col s2">
-                    <div id="tableNumber">#12</div>
-                </div>
-                <div class="col s2">
-                    <div id="paid">// TODO</div>
-                </div>
-                <div class="col s2">
-                    <div id="age">// TODO</div>
-                </div>
-                <div class="col s2">
-                    <div id="amount">4</div>
-                </div>
-                <div class="col s2">
-                    <div id="price">£26.55</div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Modal 1-->
@@ -116,7 +81,7 @@
         <div class="">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h5 class="center-align">Table #12 Order</h5>
+            <h5 class="center-align">Table #12 Order <span id="order-id"></span></h5>
           </div>
 
           <!-- Bill Starts-->
@@ -135,24 +100,24 @@
                         <td id="ordered-price" class="right-align">£6.75</td>
                       </tr>
                       <tr>
-                        <td></td>
+                        <td id="discount-percent">30%</td>
                         <td id="discount-title">Discount: Lady's Night</td>
                         <td id="discount-amount" class="right-align">-£2.00</td>
                       </tr>
                       <tr>
                         <td></td>
                         <td class="right-align bold">Total</td>
-                        <td id="order-price-final" class="right-align bold">£6.75</td>
+                        <td id="price-final" class="right-align bold">£6.75</td>
                       </tr>
                       <tr>
                         <td></td>
-                        <td>Age restriction</td>
-                        <td id="age-check" class="right-align">OK</td>
+                        <td><img src="img/18.png" alt="Age restriction"></td>
+                        <td id="age-check" class="right-align"><img src="img/process.png" alt="Process"></td>
                       </tr>
                       <tr>
                         <td></td>
-                        <td>Balance</td>
-                        <td id="balance-check" class="right-align">OK</td>
+                        <td><img src="img/wallet.png" alt="Payment"></td>
+                        <td id="balance-check" class="right-align"><img src="img/process.png" alt="Process"></td>
                       </tr>
                     </tbody>
                   </table>

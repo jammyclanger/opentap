@@ -1,21 +1,75 @@
+var getDiscountValue(percent, price) {
+	return price * percent;
+};
+
+var getTotal(price, discount) {
+	return price - discount;
+};
+
+var formatDiscount(discount) {
+	return (discount * 100).toFixed(2) + "%";
+}
+
+var formatAmount(amount) {
+	return "£" + (amount).toFixed(2);
+}
+
 var getOrder = function(data) {
 
     	$("#ordered-item").text(data.item);
     	$("#ordered-qty").text(data.quantity);
-    	$("#ordered-price").text(data.price)
+    	$("#ordered-price").text(data.price);
+    	$("#discount-percent").text("");
+    	$("#discount-title").text("");
+    	$("#discount-amount").text("");
+    	$("#price-final").text(data.price);
+
         $("#myModal").modal();
         console.log(data);
 };
 
 var getCharacteristics = function(data) {
+		var price = parseFloat($());
+		var discount = parseFloat(data.discount);
+		var discountAmount = getDiscountValue(discount, price);
+		var total = getTotal(price, discount);
 
-    	$("#ordered-item").text(data.item);
-    	$("#ordered-qty").text(data.quantity);
-    	$("#ordered-price").text(data.price)
+    	$("#discount-percent").text(formatDiscount(discount));
+    	$("#discount-title").text("Lady's night");
+    	$("#discount-amount").text(formatAmount(discountAmount));
+    	$("#price-final").text(formatAmount(total));
         $("#myModal").modal();
+
         console.log(data);
 };
 
+var insertItem = function(data) {
+    var template =         '<div class="row item" id="item<<ORDER_ID>>">' +
+            '<div class="col s12">' +
+                '<div class="col s2">' +
+                    '<div id="tableNumber<<ORDER_ID>>">#<<TABLE_NUMBER>></div>' +
+                '</div>' +
+                '<div class="col s2">' +
+                    '<div id="paid<<ORDER_ID>>"><img src="img/wallet.png" height="35"' + 'width="35" /></div>' +
+                '</div>' +
+                '<div class="col s2">' +
+                    '<div id="age<<ORDER_ID>>"><img src="img/18.png" height="35" ' + 'width="35" /></div>' +
+                '</div>' +
+                '<div class="col s3">' +
+                    '<div id="server<<ORDER_ID>>">Saci</div>' +
+                '</div>' +
+                '<div class="col s1">
+                    '<div id="amount<<ORDER_ID>>">4</div>' +
+                '</div>' +
+                '<div class="col s2">' +
+                    '<div id="price<<ORDER_ID>>">£26.55</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    
+    
+
+}
 
 var socket = io.connect('http://localhost:4200');
         socket.on('connect', function(data) {
@@ -29,6 +83,10 @@ var socket = io.connect('http://localhost:4200');
         socket.on('order', function(data) {
                 getOrder(data);
         });
+
+        socket.on('characteristics', function(data) {
+        	getCharacteristics(data);
+        })
 
 $('#process-button').on('click', function() {
 	$("#myModal").modal('hide');
