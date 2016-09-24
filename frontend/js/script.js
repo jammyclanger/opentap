@@ -18,6 +18,14 @@ var formatAmount = function(amount) {
 	return "£" + (amount).toFixed(2);
 };
 
+var updateContent = function(myDiv, content) {
+	$(myDiv).fadeOut('slow', function() {
+    	$(myDiv).text(content);
+    	$(myDiv).fadeIn('slow');
+   	});
+};
+
+
 var orderPrice;
 var ageStatusOK = false;
 var paymentStatusOK = false;
@@ -27,13 +35,14 @@ var getOrder = function(data) {
 		var quantity = parseFloat(data.quantity);
 		orderPrice = getOrderPrice(unitprice, quantity);
 
-    	$("#ordered-item").text(data.item);
-    	$("#ordered-qty").text(data.quantity);
-    	$("#ordered-price").text(formatAmount(orderPrice));
+    	updateContent("#ordered-item", data.item);
+    	updateContent("#ordered-qty", data.quantity);
+    	updateContent("#ordered-price", formatAmount(orderPrice));
+
     	$("#discount-percent").text("");
     	$("#discount-title").text("");
     	$("#discount-amount").text("");
-    	$("#price-final").text(formatAmount(orderPrice));
+    	updateContent("#price-final", formatAmount(orderPrice));
 
         $("#myModal").modal();
         console.log(data);
@@ -44,14 +53,19 @@ var getCharacteristics = function(data) {
 		var discountAmount = getDiscountValue(discount, orderPrice);
 		var total = getTotal(orderPrice, discountAmount);
 
-    	$("#discount-percent").text(formatDiscount(discount));
-    	$("#discount-title").text("Lady's Night Discount");
-    	$("#discount-amount").text(formatAmount(discountAmount));
-    	$("#price-final").text(formatAmount(total));
+    	//$("#discount-percent").text(formatDiscount(discount)).fadeIn(500);
+    	//$("#discount-title").text("Lady's Night Discount").fadeIn(500);
+    	//$("#discount-amount").text(formatAmount(discountAmount)).fadeIn(500);
+    	//$("#price-final").text(formatAmount(total)).fadeIn();
+    	updateContent("#discount-percent", formatDiscount(discount));
+    	updateContent("#discount-title", "Lady's Night Discount");
+    	updateContent("#discount-amount", formatAmount(discountAmount));
+    	updateContent("#price-final", formatAmount(total));
 
     	var ageStatus = data.age;
     	if (ageStatus == "OK") {
-    		$("#age-check").attr("src", "img/tick.png");
+    		$("#age-check").empty();
+    		$("#age-check").append('<img src="img/tick.png" alt="OK">').fadeIn(500);
     		ageStatusOK = true;
     		if (paymentStatusOK == true) {
     			//console.log("paymentstatus " + paymentStatusOk);
@@ -67,7 +81,8 @@ var getCharacteristics = function(data) {
 
 var getPaymentStatus = function(data) {
 	if (data.status == "OK") {
-		$("#balance-check").attr("src", "img/tick.png")
+		$("#payment-check").empty();
+    	$("#payment-check").append('<img src="img/tick.png" alt="OK">').fadeIn(500);
 		paymentStatusOK = true;
 		if (ageStatusOK == true) {
 			//console.log("paymentstatus " + paymentStatusOK);
