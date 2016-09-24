@@ -68,6 +68,48 @@ io.on('connection', function(socket){
         console.log(data);
         socket.emit('messages', 'Hello from server');
     });
+
+    socket.on('buy', function(data) {
+        console.log('in buy amount', data.number);
+        var number = data.number;
+        var price = 570;
+        var amount = number * price;
+        var description = "Buying " + data.type;
+
+        socket.emit('order', { id: 1, quantity: data.number, item: 'London Pride', price: price });
+
+
+        // TODO: WAIT.
+        setTimeout(function(){
+            socket.emit('characteristic', { id: 1, age: 'OK', discount: 0.3 });
+        }, 3000);
+
+
+        setTimeout(function(){
+            client.payment.create({
+                amount : amount,
+                description : description,
+                card : {
+                    expMonth : "11",
+                    expYear : "19",
+                    cvc : "123",
+                    number : "5555555555554444"
+                },
+                currency : "GBP"
+            }, function(errData, data){
+                if(errData){
+                    console.error("Error Message: " + errData.data.error.message);
+                    // handle the error
+
+                    socket.emit('errors', 'Payment was not successful, ' + errData.data.error.message);
+                }
+                console.log("Payment Status: " + data.paymentStatus);
+
+                socket.emit('payment', {status: 'OK'});
+            });
+        }, 6000);
+
+    });
 });
 
 http.listen(4200, function(){
