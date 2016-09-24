@@ -34,7 +34,7 @@ var getOrder = function(data) {
         insertItem(data);
 		console.log("get order")
         
-        if (data.id === 1) {
+        if (data.id % 5 == 0) {
             console.log("adding item one modal");
             $("#item1").click(function() {
                     $("#myModal").modal();
@@ -54,6 +54,7 @@ var getOrder = function(data) {
 	    	updateContent("#price-final", formatAmount(orderPrice));
 
         $("#myModal").modal();
+
         }
  
         console.log(data);
@@ -177,7 +178,7 @@ var socket = io.connect('http://localhost:4200');
 
 	        setTimeout(function(){
 	           	socket.emit('buy', { number: 1, type: 'beer' });
-	       	}, 45000);
+	       	}, 10000);
 
         });
         
