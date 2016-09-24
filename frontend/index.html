@@ -19,14 +19,7 @@
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script>
         
-        var socket = io.connect('http://localhost:4200');
-        socket.on('connect', function(data) {
-            socket.emit('join', 'Hello World from client');
-        });
         
-        socket.on('messages', function(data) {
-                console.log(data);
-        });
 
     </script>
 
@@ -63,14 +56,14 @@
     <div class="container">
     </div>
 
-    <!-- Modal -->
+    <!-- Modal 1-->
     <div id="myModal" class="modal fade" role="dialog">
       <div class="modal-dialog">
         <!-- Modal content-->
         <div class="">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h5 class="center-align">Table #12</h5>
+            <h5 class="center-align">Table #12 Order</h5>
           </div>
 
           <!-- Bill Starts-->
@@ -82,35 +75,37 @@
                 </div>
                 <div class="invoice">
                   <table class="highlight">
-                    <thead>
-                      <tr>
-                        <th>QTY</th>
-                        <th>ITEM</th>
-                        <th class="right-align">PRICE</th>
-                      </tr>
-                    </thead>
                     <tbody>
                       <tr>
-                        <td>1</td>
+                        <td id="ordered-qty">1</td>
                         <td id="ordered-item">London Pride</td>
-                        <td id="order-price" class="right-align">$6.75</td>
+                        <td id="ordered-price" class="right-align">£6.75</td>
                       </tr>
                       <tr>
                         <td></td>
-                        <td class="right-align">Tax</td>
-                        <td class="right-align">$0.50</td>
+                        <td id="discount-title">Discount: Lady's Night</td>
+                        <td id="discount-amount" class="right-align">-£2.00</td>
                       </tr>
                       <tr>
                         <td></td>
                         <td class="right-align bold">Total</td>
-                        <td id="order-price-final" class="right-align bold">$6.75</td>
+                        <td id="order-price-final" class="right-align bold">£6.75</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td>Age restriction</td>
+                        <td id="age-check" class="right-align">OK</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td>Balance</td>
+                        <td id="balance-check" class="right-align">OK</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-
                 <div class="button checkout row">
-                  <button id="checkout-button" class="col s12 btn-large green btn waves-effect waves-dark register"><span>Process</span> <i class="fa fa-check"></i></button>
+                  <button id="process-button" class="col s12 btn-large green btn waves-effect waves-dark register"><span>OK</span> <i class="fa fa-check"></i></button>
                 </div>
               </div>
             </div>
@@ -124,7 +119,7 @@
 
       </div>
     </div>
-
+    <!-- Modal ends -->
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

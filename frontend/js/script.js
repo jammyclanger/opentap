@@ -1,15 +1,42 @@
 var getOrder = function(data) {
 
-    	//$("#ordered-item").text(data.alcohol)
+    	$("#ordered-item").text(data.item);
+    	$("#ordered-qty").text(data.quantity);
+    	$("#ordered-price").text(data.price)
         $("#myModal").modal();
         console.log(data);
-
 };
 
-$('#checkout-button').on('click', function() {
-	$('.bill-container').remove();
-	$('.outer-content').append('Hello world');
+var getCharacteristics = function(data) {
+
+    	$("#ordered-item").text(data.item);
+    	$("#ordered-qty").text(data.quantity);
+    	$("#ordered-price").text(data.price)
+        $("#myModal").modal();
+        console.log(data);
+};
+
+
+var socket = io.connect('http://localhost:4200');
+        socket.on('connect', function(data) {
+            socket.emit('join', 'Hello World from client');
+        });
+        
+        socket.on('messages', function(data) {
+                console.log(data);
+        });
+
+        socket.on('order', function(data) {
+                getOrder(data);
+        });
+
+$('#process-button').on('click', function() {
+	$("#myModal").modal('hide');
+	//send message to back end
+	socket.emit('approve', 'Get the people what they want');
+    console.log('approve');
 });
+
 
 
 //Does fluid credit card number input

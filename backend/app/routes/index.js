@@ -68,6 +68,9 @@ io.on('connection', function(socket){
         console.log(data);
         socket.emit('messages', 'Hello from server');
     });
+    socket.on('approve', function(data) {
+        console.log(data);
+    });
 });
 
 http.listen(4200, function(){
