@@ -62,20 +62,21 @@ var getOrder = function(data) {
 
 var getCharacteristics = function(data) {
 		console.log("Get characteristics");
-        $("#age" + data.id).html('<img src="img/18-ok.png" height="35" "width="35" />');
-    
-		var discount = parseFloat(data.discount);
-		var discountAmount = getDiscountValue(discount, orderPrice);
-		var total = getTotal(orderPrice, discountAmount);
 
-    	//$("#discount-percent").text(formatDiscount(discount)).fadeIn(500);
-    	//$("#discount-title").text("Lady's Night Discount").fadeIn(500);
-    	//$("#discount-amount").text(formatAmount(discountAmount)).fadeIn(500);
-    	//$("#price-final").text(formatAmount(total)).fadeIn();
-    	updateContent("#discount-percent", formatDiscount(discount));
-    	updateContent("#discount-title", "Lady's Night Discount");
-    	updateContent("#discount-amount", formatAmount(discountAmount));
-    	updateContent("#price-final", formatAmount(total));
+        $("#age" + data.id).html('<img src="img/tick-black.png" height="35" "width="35" />');
+        //updateHtml("#age" + data.id, '<img src="img/tick-black.png" height="35" "width="35" />');
+    	if (data.id % 5 == 0) {
+    		var discount = parseFloat(data.discount);
+			var discountAmount = getDiscountValue(discount, orderPrice);
+			var total = getTotal(orderPrice, discountAmount);
+
+	    	updateContent("#discount-percent", formatDiscount(discount));
+	    	updateContent("#discount-title", "Lady's Night Discount");
+	    	updateContent("#discount-amount", formatAmount(discountAmount));
+	    	updateContent("#price-final", formatAmount(total));
+
+    	}
+		
 
     	var ageStatus = data.age;
     	if (ageStatus == "OK") {
@@ -83,8 +84,6 @@ var getCharacteristics = function(data) {
     		$("#age-check").append('<img src="img/tick.png" alt="OK">').fadeIn(500);
     		ageStatusOK = true;
     		if (paymentStatusOK == true) {
-    			//console.log("paymentstatus " + paymentStatusOk);
-				//console.log("ageStatusOK " + ageStatusOK);
     			$('#process-button').removeClass('disabled');
     		}
     	} else {
@@ -100,7 +99,7 @@ var getPaymentStatus = function(data) {
 		$("#payment-check").empty();
     	$("#payment-check").append('<img src="img/tick.png" alt="OK">').fadeIn(500);
 
-        $("#paid" + data.id).html('<img src="img/wallet-ok.png" height="35" "width="35" />');
+        $("#paid" + data.id).html('<img src="img/tick-black.png" height="35" "width="35" />');
 
 		paymentStatusOK = true;
 		if (ageStatusOK == true) {
@@ -112,7 +111,7 @@ var getPaymentStatus = function(data) {
 };
 
 var insertItem = function(data) {
-    var template =         '<div class="row item" id="item<<ORDER_ID>>">' +
+    var template =         '<div id="item<<ORDER_ID>>">' +
             '<div class="col s12">' +
                 '<div class="col s2">' +
                     '<div id="tableNumber<<ORDER_ID>>">#<<TABLE_NUMBER>></div>' +
@@ -151,8 +150,8 @@ var insertItem = function(data) {
     filled = filled.replace("<<QUANTITY>>", data.quantity);
     filled = filled.replace("<<PRICE>>", price);
     
-    $(".container").append(filled);
-
+    //$(".container").append(filled).last().hide().fadeIn();
+    $('<div class="row item"></div>').appendTo(".container").hide().append(filled).fadeIn('slow');
 };
 
 var socket = io.connect('http://localhost:4200');
