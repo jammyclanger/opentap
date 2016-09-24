@@ -109,7 +109,6 @@ var insertItem = function(data) {
                 '</div>' +
                 '<div class="col s1">' +
                     '<div id="amount<<ORDER_ID>>"><<QUANTITY>></div>' +
-                    '<div id="amount<<ORDER_ID>>">4</div>' +
                 '</div>' +
                 '<div class="col s2">' +
                     '<div id="price<<ORDER_ID>>"><<PRICE>></div>' +
