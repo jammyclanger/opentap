@@ -1,21 +1,47 @@
+var getDiscountValue(percent, price) {
+	return price * percent;
+};
+
+var getTotal(price, discount) {
+	return price - discount;
+};
+
+var formatDiscount(discount) {
+	return (discount * 100).toFixed(2) + "%";
+}
+
+var formatAmount(amount) {
+	return "£" + (amount).toFixed(2);
+}
+
 var getOrder = function(data) {
 
     	$("#ordered-item").text(data.item);
     	$("#ordered-qty").text(data.quantity);
-    	$("#ordered-price").text(data.price)
+    	$("#ordered-price").text(data.price);
+    	$("#discount-percent").text("");
+    	$("#discount-title").text("");
+    	$("#discount-amount").text("");
+    	$("#price-final").text(data.price);
+
         $("#myModal").modal();
         console.log(data);
 };
 
 var getCharacteristics = function(data) {
+		var price = parseFloat($());
+		var discount = parseFloat(data.discount);
+		var discountAmount = getDiscountValue(discount, price);
+		var total = getTotal(price, discount);
 
-    	$("#ordered-item").text(data.item);
-    	$("#ordered-qty").text(data.quantity);
-    	$("#ordered-price").text(data.price)
+    	$("#discount-percent").text(formatDiscount(discount));
+    	$("#discount-title").text("Lady's night");
+    	$("#discount-amount").text(formatAmount(discountAmount));
+    	$("#price-final").text(formatAmount(total));
         $("#myModal").modal();
+
         console.log(data);
 };
-
 
 var socket = io.connect('http://localhost:4200');
         socket.on('connect', function(data) {
@@ -30,14 +56,16 @@ var socket = io.connect('http://localhost:4200');
                 getOrder(data);
         });
 
+        socket.on('characteristics', function(data) {
+        	getCharacteristics(data);
+        })
+
 $('#process-button').on('click', function() {
 	$("#myModal").modal('hide');
 	//send message to back end
 	socket.emit('approve', 'Get the people what they want');
     console.log('approve');
 });
-
-
 
 //Does fluid credit card number input
 $('.input-card-number').on('keyup change', function() {
