@@ -37,8 +37,6 @@ $('#process-button').on('click', function() {
     console.log('approve');
 });
 
-
-
 //Does fluid credit card number input
 $('.input-card-number').on('keyup change', function() {
   t = $(this);

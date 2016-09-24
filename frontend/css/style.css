@@ -299,3 +299,13 @@ textarea.materialize-textarea,
   transform: translate3d(0px, -2px, 0px);
   box-shadow: 0 16px 28px 0 rgba(0,0,0,0.22),0 25px 55px 0 rgba(0,0,0,0.21);
   }
+
+.item {
+    background-color: green;
+    font-size: 0.4em;
+    padding: 0.4em 0;
+}
+
+.item:nth-child(2n+2) {  
+  background-color: yellow;
+}
