@@ -31,24 +31,38 @@ var ageStatusOK = false;
 var paymentStatusOK = false;
 
 var getOrder = function(data) {
-		var unitprice = parseFloat(data.price);
-		var quantity = parseFloat(data.quantity);
-		orderPrice = getOrderPrice(unitprice, quantity);
+        insertItem(data);
+		console.log("get order")
+        
+        if (data.id === 1) {
+            console.log("adding item one modal");
+            $("#item1").click(function() {
+                    $("#myModal").modal();
+            });
 
-    	updateContent("#ordered-item", data.item);
-    	updateContent("#ordered-qty", data.quantity);
-    	updateContent("#ordered-price", formatAmount(orderPrice));
+			var unitprice = parseFloat(data.price);
+			var quantity = parseFloat(data.quantity);
+			orderPrice = getOrderPrice(unitprice, quantity);
 
-    	$("#discount-percent").text("");
-    	$("#discount-title").text("");
-    	$("#discount-amount").text("");
-    	updateContent("#price-final", formatAmount(orderPrice));
+	    	updateContent("#ordered-item", data.item);
+	    	updateContent("#ordered-qty", data.quantity);
+	    	updateContent("#ordered-price", formatAmount(orderPrice));
+
+	    	$("#discount-percent").text("");
+	    	$("#discount-title").text("");
+	    	$("#discount-amount").text("");
+	    	updateContent("#price-final", formatAmount(orderPrice));
 
         $("#myModal").modal();
+        }
+ 
         console.log(data);
 };
 
 var getCharacteristics = function(data) {
+		console.log("Get characteristics");
+        $("#age" + data.id).html('<img src="img/18-ok.png" height="35" "width="35" />');
+    
 		var discount = parseFloat(data.discount);
 		var discountAmount = getDiscountValue(discount, orderPrice);
 		var total = getTotal(orderPrice, discountAmount);
@@ -74,19 +88,21 @@ var getCharacteristics = function(data) {
     		}
     	} else {
     		//TODO ERROR
-    	};
+    	}
 
         console.log(data);
 };
 
 var getPaymentStatus = function(data) {
 	if (data.status == "OK") {
+
 		$("#payment-check").empty();
     	$("#payment-check").append('<img src="img/tick.png" alt="OK">').fadeIn(500);
+
+        $("#paid" + data.id).html('<img src="img/wallet-ok.png" height="35" "width="35" />');
+
 		paymentStatusOK = true;
 		if (ageStatusOK == true) {
-			//console.log("paymentstatus " + paymentStatusOK);
-			//console.log("ageStatusOK " + ageStatusOK);
 			$('#process-button').removeClass('disabled');
 		}
 	} else {
@@ -101,22 +117,41 @@ var insertItem = function(data) {
                     '<div id="tableNumber<<ORDER_ID>>">#<<TABLE_NUMBER>></div>' +
                 '</div>' +
                 '<div class="col s2">' +
-                    '<div id="paid<<ORDER_ID>>"><img src="img/wallet.png" height="35"' + 'width="35" /></div>' +
+                    '<div id="paid<<ORDER_ID>>"><img src="img/wallet.png" height="35" width="35" /></div>' +
                 '</div>' +
                 '<div class="col s2">' +
-                    '<div id="age<<ORDER_ID>>"><img src="img/18.png" height="35" ' + 'width="35" /></div>' +
+                    '<div id="age<<ORDER_ID>>"><img src="img/18.png" height="35" width="35" /></div>' +
                 '</div>' +
                 '<div class="col s3">' +
-                    '<div id="server<<ORDER_ID>>">Saci</div>' +
+                    '<div id="server<<ORDER_ID>>"><<TENDER>></div>' +
                 '</div>' +
                 '<div class="col s1">' +
-                    '<div id="amount<<ORDER_ID>>">4</div>' +
+                    '<div id="amount<<ORDER_ID>>"><<QUANTITY>></div>' +
                 '</div>' +
                 '<div class="col s2">' +
-                    '<div id="price<<ORDER_ID>>">£26.55</div>' +
+                    '<div id="price<<ORDER_ID>>"><<PRICE>></div>' +
                 '</div>' +
             '</div>' +
-        '</div>';   
+        '</div>';
+    
+    var price = formatAmount((data.quantity * data.price)/100);
+    
+    console.log(JSON.stringify(data));
+    var filled = template.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<TABLE_NUMBER>>", data.table);
+    filled = filled.replace("<<TENDER>>", data.tender);
+    filled = filled.replace("<<QUANTITY>>", data.quantity);
+    filled = filled.replace("<<PRICE>>", price);
+    
+    $(".container").append(filled);
+
 };
 
 var socket = io.connect('http://localhost:4200');
@@ -127,6 +162,22 @@ var socket = io.connect('http://localhost:4200');
 	        setTimeout(function(){
 	           	socket.emit('buy', { number: 1, type: 'beer' });
 	       	}, 3000);
+            
+	        setTimeout(function(){
+	           	socket.emit('buy', { number: 1, type: 'beer' });
+	       	}, 6000);
+            
+	        setTimeout(function(){
+	           	socket.emit('buy', { number: 1, type: 'beer' });
+	       	}, 8000);
+
+	        setTimeout(function(){
+	           	socket.emit('buy', { number: 1, type: 'beer' });
+	       	}, 16000);
+
+	        setTimeout(function(){
+	           	socket.emit('buy', { number: 1, type: 'beer' });
+	       	}, 45000);
 
         });
         

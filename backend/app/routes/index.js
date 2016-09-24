@@ -6,6 +6,8 @@ var io = require('socket.io')(http);
 var simplify = require('simplify-commerce');
 var path = require('path');
 
+var counter = 1;
+
 var router = express.Router();
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -20,7 +22,13 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../../../frontend', 'index.html'));
 });
 
-router.param('amount', function(req, res, next, amount) { 
+app.get('/status', function(req, res) {
+    // TODO: Actually from the mastercard place.
+    console.log("Edison wants to chat :)");
+    res.send("2");
+});
+
+app.param('amount', function(req, res, next, amount) { 
     console.log('in amount router param');
     req.details = {
         number: amount,
@@ -30,7 +38,7 @@ router.param('amount', function(req, res, next, amount) {
     return next();
 });
 
-router.route('/buy/:amount').get(function(req, res, next) {
+app.route('/buy/:amount').get(function(req, res, next) {
     console.log('in buy amount', req.details.number);
     var number = req.details.number;
     var amount = number * 570;
@@ -74,19 +82,26 @@ io.on('connection', function(socket){
 
     socket.on('buy', function(data) {
         console.log('in buy amount', data.number);
+        var theId = counter;
+        counter++;
+        
         var number = data.number;
         var price = 570;
         var amount = number * price;
         var description = "Buying " + data.type;
+        
+        var tenders = ['Saci', 'Jaime', 'Quynh', 'Butler', 'Sandra'];
+        var server = tenders[Math.round(Number(Math.random() * (4 - 0) + 0))];
+        var tableNumber = Math.round(Number(Math.random() * (20 - 1) + 1));
+        var quantity = Math.round(Number(Math.random() * (5 - 1) + 1));
+        var price = Math.round(Number(Math.random() * (700 - 350) + 350));
+        
+        socket.emit('order', { id: theId, quantity: quantity, item: 'London Pride', price: price, tender: server, table: tableNumber });
 
-        socket.emit('order', { id: 1, quantity: data.number, item: 'London Pride', price: price });
-
-
-        // TODO: WAIT.
         setTimeout(function(){
-            socket.emit('characteristic', { id: 1, age: 'OK', discount: 0.3 });
+            socket.emit('characteristic', { id: theId, age: 'OK', discount: 0.3 });
+            
         }, 3000);
-
 
         setTimeout(function(){
             client.payment.create({
@@ -108,10 +123,10 @@ io.on('connection', function(socket){
                 }
                 console.log("Payment Status: " + data.paymentStatus);
 
-                socket.emit('payment', {status: 'OK'});
+                socket.emit('payment', {id: theId, status: 'OK'});
             });
         }, 6000);
-
+        
     });
 });
 
