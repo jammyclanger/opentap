@@ -21,26 +21,33 @@ var formatAmount = function(amount) {
 var orderPrice;
 
 var getOrder = function(data) {
+        insertItem(data);
 		console.log("get order")
 		var unitprice = parseFloat(data.price);
 		var quantity = parseFloat(data.quantity);
 		orderPrice = getOrderPrice(unitprice, quantity);
 
-    	$("#ordered-item").text(data.item);
-    	$("#ordered-qty").text(data.quantity);
-    	$("#ordered-price").text(formatAmount(orderPrice));
-    	$("#discount-percent").text("");
-    	$("#discount-title").text("");
-    	$("#discount-amount").text("");
-    	$("#price-final").text(formatAmount(orderPrice));
+        if (data.id === 1) {
+            console.log("adding item one modal");
+            $("#item1").click(function() {
+                    $("#myModal").modal();
+            });
 
-        $("#myModal").modal();
+            $("#ordered-item").text(data.item);
+            $("#ordered-qty").text(data.quantity);
+            $("#ordered-price").text(formatAmount(orderPrice));
+            $("#discount-percent").text("");
+            $("#discount-title").text("");
+            $("#discount-amount").text("");
+            $("#price-final").text(formatAmount(orderPrice));
+        }
+    
         console.log(data);
 };
 
 var getCharacteristics = function(data) {
 		console.log("Get characteristics");
-
+        $("#age" + data.id).html('<img src="img/18-ok.png" height="35" "width="35" />');
 		var discount = parseFloat(data.discount);
 		var discountAmount = getDiscountValue(discount, orderPrice);
 		var total = getTotal(orderPrice, discount);
@@ -58,6 +65,7 @@ var getCharacteristics = function(data) {
 var getPaymentStatus = function(data) {
 	console.log("get payment status")
 	if (data.status == "OK") {
+        $("#paid" + data.id).html('<img src="img/wallet-ok.png" height="35" "width="35" />');
 		$("#balance-check").attr("src", "img/tick.png")
 	} else {
 		//TODO: red X image
@@ -71,25 +79,40 @@ var insertItem = function(data) {
                     '<div id="tableNumber<<ORDER_ID>>">#<<TABLE_NUMBER>></div>' +
                 '</div>' +
                 '<div class="col s2">' +
-                    '<div id="paid<<ORDER_ID>>"><img src="img/wallet.png" height="35"' + 'width="35" /></div>' +
+                    '<div id="paid<<ORDER_ID>>"><img src="img/wallet.png" height="35" width="35" /></div>' +
                 '</div>' +
                 '<div class="col s2">' +
-                    '<div id="age<<ORDER_ID>>"><img src="img/18.png" height="35" ' + 'width="35" /></div>' +
+                    '<div id="age<<ORDER_ID>>"><img src="img/18.png" height="35" width="35" /></div>' +
                 '</div>' +
                 '<div class="col s3">' +
-                    '<div id="server<<ORDER_ID>>">Saci</div>' +
+                    '<div id="server<<ORDER_ID>>"><<TENDER>></div>' +
                 '</div>' +
-                '<div class="col s1">
-                    '<div id="amount<<ORDER_ID>>">4</div>' +
+                '<div class="col s1">' +
+                    '<div id="amount<<ORDER_ID>>"><<QUANTITY>></div>' +
                 '</div>' +
                 '<div class="col s2">' +
-                    '<div id="price<<ORDER_ID>>">£26.55</div>' +
+                    '<div id="price<<ORDER_ID>>"><<PRICE>></div>' +
                 '</div>' +
             '</div>' +
         '</div>';
     
+    var price = formatAmount((data.quantity * data.price)/100);
     
-
+    console.log(JSON.stringify(data));
+    var filled = template.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<ORDER_ID>>", data.id);
+    filled = filled.replace("<<TABLE_NUMBER>>", data.table);
+    filled = filled.replace("<<TENDER>>", data.tender);
+    filled = filled.replace("<<QUANTITY>>", data.quantity);
+    filled = filled.replace("<<PRICE>>", price);
+    
+    $(".container").append(filled);
 }
 
 var socket = io.connect('http://localhost:4200');
@@ -98,9 +121,24 @@ var socket = io.connect('http://localhost:4200');
 
 	        console.log("check");
 	        setTimeout(function(){
-	        	console.log("timeout");
 	           	socket.emit('buy', { number: 1, type: 'beer' });
 	       	}, 3000);
+            
+	        setTimeout(function(){
+	           	socket.emit('buy', { number: 1, type: 'beer' });
+	       	}, 6000);
+            
+	        setTimeout(function(){
+	           	socket.emit('buy', { number: 1, type: 'beer' });
+	       	}, 8000);
+
+	        setTimeout(function(){
+	           	socket.emit('buy', { number: 1, type: 'beer' });
+	       	}, 16000);
+
+	        setTimeout(function(){
+	           	socket.emit('buy', { number: 1, type: 'beer' });
+	       	}, 45000);
 
         });
         
