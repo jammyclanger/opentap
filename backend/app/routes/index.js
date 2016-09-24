@@ -1,17 +1,22 @@
 var express = require('express');
-var simplify = require('simplify-commerce');
-var router = express.Router();
 var app = express();
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
+
+var simplify = require('simplify-commerce');
 var path = require('path');
+
+var router = express.Router();
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../../../frontend')));
 
 client = simplify.getClient({
     publicKey: 'sbpb_ODMzZWJjNjQtOWNlMS00MTA3LWI0YzktNTVhYTViZmY2Mjdk',
     privateKey: 'EpE2V87prm4EccZGl05ur5P8qw/CxeeZELxdJ9+K5oV5YFFQL0ODSXAOkNtXTToq'
 });
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-    //res.render('index', { title: 'OpenTap' });
+app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../../../frontend', 'index.html'));
 });
 
@@ -46,12 +51,27 @@ router.route('/buy/:amount').get(function(req, res, next) {
             console.error("Error Message: " + errData.data.error.message);
             // handle the error
 
-            return res.send({status : 'not'});
+            return res.status(400).send({status : 'bad', message: errData.data.error.message});
         }
         console.log("Payment Status: " + data.paymentStatus);
 
         return res.send({status : 'ok', price: amount, number: number});
     });
+});
+
+io.on('connection', function(socket){
+    console.log('a user connected');
+    socket.on('disconnect', function(){
+        console.log('user disconnected');
+    });
+    socket.on('join', function(data) {
+        console.log(data);
+        socket.emit('messages', 'Hello from server');
+    });
+});
+
+http.listen(4200, function(){
+    console.log('listening on *:4200');
 });
 
 module.exports = router;

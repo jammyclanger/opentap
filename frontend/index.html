@@ -13,6 +13,21 @@
     <link href="https://fonts.googleapis.com/css?family=Baloo+Bhai" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
 
+    <!-- SocketIO -->
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script>
+        
+        var socket = io.connect('http://localhost:4200');
+        socket.on('connect', function(data) {
+            socket.emit('join', 'Hello World from client');
+        });
+        
+        socket.on('messages', function(data) {
+                console.log(data);
+        });
+
+    </script>
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
