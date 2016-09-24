@@ -64,6 +64,34 @@ var getPaymentStatus = function(data) {
 	}
 };
 
+var insertItem = function(data) {
+    var template =         '<div class="row item" id="item<<ORDER_ID>>">' +
+            '<div class="col s12">' +
+                '<div class="col s2">' +
+                    '<div id="tableNumber<<ORDER_ID>>">#<<TABLE_NUMBER>></div>' +
+                '</div>' +
+                '<div class="col s2">' +
+                    '<div id="paid<<ORDER_ID>>"><img src="img/wallet.png" height="35"' + 'width="35" /></div>' +
+                '</div>' +
+                '<div class="col s2">' +
+                    '<div id="age<<ORDER_ID>>"><img src="img/18.png" height="35" ' + 'width="35" /></div>' +
+                '</div>' +
+                '<div class="col s3">' +
+                    '<div id="server<<ORDER_ID>>">Saci</div>' +
+                '</div>' +
+                '<div class="col s1">
+                    '<div id="amount<<ORDER_ID>>">4</div>' +
+                '</div>' +
+                '<div class="col s2">' +
+                    '<div id="price<<ORDER_ID>>">£26.55</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    
+    
+
+}
+
 var socket = io.connect('http://localhost:4200');
         socket.on('connect', function(data) {
             socket.emit('join', 'Hello World from client');
