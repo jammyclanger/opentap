@@ -58,7 +58,7 @@ app.route('/buy/:amount').get(function(req, res, next) {
     counter++;
 
     var number = req.details.number;
-    var price = 570;
+    var price = 550;
     var amount = number * price;
     var description = "Buying " + req.details.type;
 
@@ -66,7 +66,6 @@ app.route('/buy/:amount').get(function(req, res, next) {
     var server = tenders[Math.round(Number(Math.random() * (4 - 0) + 0))];
     var tableNumber = Math.round(Number(Math.random() * (20 - 1) + 1));
     var quantity = req.details.number;
-    var price = 550;
 
     globalSocket.emit('order', { id: theId, quantity: quantity, item: 'London Pride', price: price, tender: server, table: tableNumber });
 

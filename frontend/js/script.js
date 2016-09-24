@@ -34,7 +34,7 @@ var getOrder = function(data) {
         insertItem(data);
 		console.log("get order")
         
-        if (data.id % 5 == 0) {
+        if (data.id % 2 == 0) {
             console.log("adding item one modal");
             $("#item1").click(function() {
                     $("#myModal").modal();
