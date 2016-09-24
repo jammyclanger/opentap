@@ -72,7 +72,7 @@ var getCharacteristics = function(data) {
     		}
     	} else {
     		//TODO ERROR
-    	};
+    	}
 
         console.log(data);
 };
@@ -134,11 +134,8 @@ var insertItem = function(data) {
     filled = filled.replace("<<PRICE>>", price);
     
     $(".container").append(filled);
-}
-=======
-        '</div>';   
+
 };
->>>>>>> 2f4faf2c2ab154bfe40ab79caeeed618a7b3a5c7
 
 var socket = io.connect('http://localhost:4200');
         socket.on('connect', function(data) {
