@@ -11,8 +11,8 @@ client = simplify.getClient({
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  //res.render('index', { title: 'OpenTap' });
-  res.sendFile(path.join(__dirname, '../../../frontend', 'index.html'));
+    //res.render('index', { title: 'OpenTap' });
+    res.sendFile(path.join(__dirname, '../../../frontend', 'index.html'));
 });
 
 router.param('amount', function(req, res, next, amount) { 
