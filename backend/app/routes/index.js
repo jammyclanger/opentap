@@ -8,7 +8,11 @@ var path = require('path');
 
 var counter = 1;
 
+var status = "0";
+
 var router = express.Router();
+
+var globalSocket;
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, '../../../frontend')));
@@ -25,7 +29,16 @@ app.get('/', function (req, res) {
 app.get('/status', function(req, res) {
     // TODO: Actually from the mastercard place.
     console.log("Edison wants to chat :)");
-    res.send("2");
+    if (status == "2") {
+        res.send("2");
+        status = "0";
+    } else {
+        res.send(status);
+    }
+});
+
+app.get('/price', function(req, res) {
+    res.send("5.50");
 });
 
 app.param('amount', function(req, res, next, amount) { 
@@ -40,34 +53,55 @@ app.param('amount', function(req, res, next, amount) {
 
 app.route('/buy/:amount').get(function(req, res, next) {
     console.log('in buy amount', req.details.number);
+
+    var theId = counter;
+    counter++;
+
     var number = req.details.number;
-    var amount = number * 570;
+    var price = 570;
+    var amount = number * price;
     var description = "Buying " + req.details.type;
 
-    client.payment.create({
-        amount : amount,
-        description : description,
-        card : {
-            expMonth : "11",
-            expYear : "19",
-            cvc : "123",
-            number : "5555555555554444"
-        },
-        currency : "GBP"
-    }, function(errData, data){
-        if(errData){
-            console.error("Error Message: " + errData.data.error.message);
-            // handle the error
+    var tenders = ['Saci', 'Jaime', 'Quynh', 'Butler', 'Sandra'];
+    var server = tenders[Math.round(Number(Math.random() * (4 - 0) + 0))];
+    var tableNumber = Math.round(Number(Math.random() * (20 - 1) + 1));
+    var quantity = req.details.number;
+    var price = 550;
 
-            return res.status(400).send({status : 'bad', message: errData.data.error.message});
-        }
-        console.log("Payment Status: " + data.paymentStatus);
+    globalSocket.emit('order', { id: theId, quantity: quantity, item: 'London Pride', price: price, tender: server, table: tableNumber });
 
-        return res.send({status : 'ok', price: amount, number: number});
-    });
+    setTimeout(function(){
+        globalSocket.emit('characteristic', { id: theId, age: 'OK', discount: 0.3 });
+
+    }, 3000);
+
+    setTimeout(function(){
+        client.payment.create({
+            amount : amount,
+            description : description,
+            card : {
+                expMonth : "11",
+                expYear : "19",
+                cvc : "123",
+                number : "5555555555554444"
+            },
+            currency : "GBP"
+        }, function(errData, data){
+            if(errData){
+
+                globalSocket.emit('errors', 'Payment was not successful');
+            }
+            status = "2";
+            globalSocket.emit('payment', {id: theId, status: 'OK'});
+            
+            return res.send("" + price);
+        });
+    }, 2000);
+
 });
 
 io.on('connection', function(socket){
+    globalSocket = socket;
     console.log('a user connected');
     socket.on('disconnect', function(){
         console.log('user disconnected');
@@ -84,23 +118,23 @@ io.on('connection', function(socket){
         console.log('in buy amount', data.number);
         var theId = counter;
         counter++;
-        
+
         var number = data.number;
         var price = 570;
         var amount = number * price;
         var description = "Buying " + data.type;
-        
+
         var tenders = ['Saci', 'Jaime', 'Quynh', 'Butler', 'Sandra'];
         var server = tenders[Math.round(Number(Math.random() * (4 - 0) + 0))];
         var tableNumber = Math.round(Number(Math.random() * (20 - 1) + 1));
         var quantity = Math.round(Number(Math.random() * (5 - 1) + 1));
         var price = Math.round(Number(Math.random() * (700 - 350) + 350));
-        
+
         socket.emit('order', { id: theId, quantity: quantity, item: 'London Pride', price: price, tender: server, table: tableNumber });
 
         setTimeout(function(){
             socket.emit('characteristic', { id: theId, age: 'OK', discount: 0.3 });
-            
+
         }, 3000);
 
         setTimeout(function(){
@@ -116,17 +150,15 @@ io.on('connection', function(socket){
                 currency : "GBP"
             }, function(errData, data){
                 if(errData){
-                    console.error("Error Message: " + errData.data.error.message);
-                    // handle the error
-
-                    socket.emit('errors', 'Payment was not successful, ' + errData.data.error.message);
+                    // TODO Put this back
+                    socket.emit('payment', {id: theId, status: 'OK'});
+                    //socket.emit('errors', 'Payment was not successful');
                 }
-                console.log("Payment Status: " + data.paymentStatus);
 
                 socket.emit('payment', {id: theId, status: 'OK'});
             });
         }, 6000);
-        
+
     });
 });
 

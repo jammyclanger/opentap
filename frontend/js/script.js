@@ -159,6 +159,7 @@ var socket = io.connect('http://localhost:4200');
             socket.emit('join', 'Hello World from client');
 
 	        console.log("check");
+            /*
 	        setTimeout(function(){
 	           	socket.emit('buy', { number: 1, type: 'beer' });
 	       	}, 3000);
@@ -178,7 +179,7 @@ var socket = io.connect('http://localhost:4200');
 	        setTimeout(function(){
 	           	socket.emit('buy', { number: 1, type: 'beer' });
 	       	}, 10000);
-
+*/
         });
         
         socket.on('messages', function(data) {
