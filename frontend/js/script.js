@@ -1,51 +1,79 @@
-var getDiscountValue(percent, price) {
+var getDiscountValue = function(percent, price) {
 	return price * percent;
 };
 
-var getTotal(price, discount) {
+var getOrderPrice = function(unitprice, quantity) {
+	return unitprice * quantity / 100;
+}
+
+var getTotal = function(price, discount) {
 	return price - discount;
 };
 
-var formatDiscount(discount) {
-	return (discount * 100).toFixed(2) + "%";
-}
+var formatDiscount = function(discount) {
+	return (discount * 100).toFixed(0) + "%";
+};
 
-var formatAmount(amount) {
+var formatAmount = function(amount) {
 	return "£" + (amount).toFixed(2);
-}
+};
+
+var orderPrice;
 
 var getOrder = function(data) {
+		console.log("get order")
+		var unitprice = parseFloat(data.price);
+		var quantity = parseFloat(data.quantity);
+		orderPrice = getOrderPrice(unitprice, quantity);
 
     	$("#ordered-item").text(data.item);
     	$("#ordered-qty").text(data.quantity);
-    	$("#ordered-price").text(data.price);
+    	$("#ordered-price").text(formatAmount(orderPrice));
     	$("#discount-percent").text("");
     	$("#discount-title").text("");
     	$("#discount-amount").text("");
-    	$("#price-final").text(data.price);
+    	$("#price-final").text(formatAmount(orderPrice));
 
         $("#myModal").modal();
         console.log(data);
 };
 
 var getCharacteristics = function(data) {
-		var price = parseFloat($());
+		console.log("Get characteristics");
+
 		var discount = parseFloat(data.discount);
-		var discountAmount = getDiscountValue(discount, price);
-		var total = getTotal(price, discount);
+		var discountAmount = getDiscountValue(discount, orderPrice);
+		var total = getTotal(orderPrice, discount);
 
     	$("#discount-percent").text(formatDiscount(discount));
     	$("#discount-title").text("Lady's night");
     	$("#discount-amount").text(formatAmount(discountAmount));
     	$("#price-final").text(formatAmount(total));
-        $("#myModal").modal();
+
+    	$("#age-check").attr("src", "img/tick.png")
 
         console.log(data);
+};
+
+var getPaymentStatus = function(data) {
+	console.log("get payment status")
+	if (data.status == "OK") {
+		$("#balance-check").attr("src", "img/tick.png")
+	} else {
+		//TODO: red X image
+	}
 };
 
 var socket = io.connect('http://localhost:4200');
         socket.on('connect', function(data) {
             socket.emit('join', 'Hello World from client');
+
+	        console.log("check");
+	        setTimeout(function(){
+	        	console.log("timeout");
+	           	socket.emit('buy', { number: 1, type: 'beer' });
+	       	}, 3000);
+
         });
         
         socket.on('messages', function(data) {
@@ -56,9 +84,13 @@ var socket = io.connect('http://localhost:4200');
                 getOrder(data);
         });
 
-        socket.on('characteristics', function(data) {
+        socket.on('characteristic', function(data) {
         	getCharacteristics(data);
-        })
+        });
+
+        socket.on('payment', function(data) {
+        	getPaymentStatus(data);
+        });
 
 $('#process-button').on('click', function() {
 	$("#myModal").modal('hide');
