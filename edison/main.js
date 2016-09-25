@@ -53,7 +53,7 @@ function startResponsePoll() {
     child = exec(command,
                 function (error, stdout, stderr) {
         console.log(stdout);
-        sleep(1000);
+        sleep(500);
         if(stdout==0)startResponsePoll();
         else manageLCD(parseInt(stdout));
        });
@@ -91,13 +91,17 @@ function manageLCD(buttonState) {
         digital_pin_D6.write(0);
         display.clear();
         display.setCursor(0, 0);
-        var Counter=0;
-        while(Counter<50){
-            Counter++;
-            display.scroll(true);
-            display.write('Thank You for using OpenTap');
-            sleep(100);
-        }
+        display.write('Thank You for');
+        display.setCursor(1, 0);
+        display.write('using OpenTap!');
+        sleep(2000);
+//        var Counter=0;
+//        while(Counter<50){
+//            Counter++;
+//            display.scroll(true);
+//            display.write('Thank You for using OpenTap');
+//            sleep(100);
+//        }
         manageLCD(0);
     } else if (buttonState === 3) {
         display.clear();
