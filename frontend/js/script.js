@@ -94,7 +94,7 @@ var getCharacteristics = function(data) {
 		if ($('#myModal').hasClass('in') && $('#magicId').text() == data.id) {
 			console.log('updating discount');
 			updateContent("#discount-percent", formatDiscount(discount));
-	    	updateContent("#discount-title", "Lady's Night Discount");
+	    	updateContent("#discount-title", "Paytastic Hackathon Discount");
 	    	updateContent("#discount-amount", formatAmount(discountAmount));
 	    	updateContent("#price-final", formatAmount(total));
             updateContent("#price" + data.id, formatAmount(total));
