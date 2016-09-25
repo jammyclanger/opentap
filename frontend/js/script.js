@@ -29,66 +29,84 @@ var updateContent = function(myDiv, content) {
 var orderPrice;
 var ageStatusOK = false;
 var paymentStatusOK = false;
+var allOrders = [];
 
 var getOrder = function(data) {
         insertItem(data);
-		console.log("get order")
-        
-        if (data.id % 2 == 0) {
-            console.log("adding item one modal");
-            $("#item1").click(function() {
-                    $("#myModal").modal();
-            });
+		
+        var thisOrder = {
+        	quantity: data.quantity, 
+        	item: data.item,
+        	price: data.price,
+        	table: data.table
+        };
 
-			var unitprice = parseFloat(data.price);
-			var quantity = parseFloat(data.quantity);
-			orderPrice = getOrderPrice(unitprice, quantity);
+        allOrders[data.id] =  thisOrder;  
 
-	    	updateContent("#ordered-item", data.item);
-	    	updateContent("#ordered-qty", data.quantity);
-	    	updateContent("#ordered-price", formatAmount(orderPrice));
+   //      if (data.id % 2 == 0) {
+   //          console.log("adding item one modal");
+   //          $("#item1").click(function() {
+   //                  $("#myModal").modal();
+   //          });
 
-	    	$("#discount-percent").text("");
-	    	$("#discount-title").text("");
-	    	$("#discount-amount").text("");
-	    	updateContent("#price-final", formatAmount(orderPrice));
+			// var unitprice = parseFloat(data.price);
+			// var quantity = parseFloat(data.quantity);
+			// orderPrice = getOrderPrice(unitprice, quantity);
 
-        $("#myModal").modal();
+	  //   	updateContent("#ordered-item", data.item);
+	  //   	updateContent("#ordered-qty", data.quantity);
+	  //   	updateContent("#ordered-price", formatAmount(orderPrice));
+	  //   	updateContent("#order-id", data.table);
 
-        }
+	  //   	$("#discount-percent").text("");
+	  //   	$("#discount-title").text("");
+	  //   	$("#discount-amount").text("");
+	  //   	updateContent("#price-final", formatAmount(orderPrice));
+
+   //      $("#myModal").modal();
+
+   //      }
  
-        console.log(data);
+   //      console.log(data);
 };
+
 
 var getCharacteristics = function(data) {
 		console.log("Get characteristics");
 
         $("#age" + data.id).html('<img src="img/tick-black.png" height="35" "width="35" />');
-        //updateHtml("#age" + data.id, '<img src="img/tick-black.png" height="35" "width="35" />');
-    	if (data.id % 5 == 0) {
-    		var discount = parseFloat(data.discount);
-			var discountAmount = getDiscountValue(discount, orderPrice);
-			var total = getTotal(orderPrice, discountAmount);
 
-	    	updateContent("#discount-percent", formatDiscount(discount));
+		var discount = parseFloat(data.discount);
+		var discountAmount = getDiscountValue(discount, orderPrice);
+		var total = getTotal(orderPrice, discountAmount);
+
+		var thisOrder = allOrders[data.id];
+		thisOrder.age = "OK";
+		thisOrder.discount = data.discount;
+		allOrders[data.id] = thisOrder;
+
+		console.log('orderid: ' + $('#order-id').text());
+		console.log($('#myModal').hasClass('in'));
+
+		if ($('#myModal').hasClass('in') && $('#order-id').text() == data.id) {
+			console.log('updating discount');
+			updateContent("#discount-percent", formatDiscount(discount));
 	    	updateContent("#discount-title", "Lady's Night Discount");
 	    	updateContent("#discount-amount", formatAmount(discountAmount));
 	    	updateContent("#price-final", formatAmount(total));
-
-    	}
-		
-
-    	var ageStatus = data.age;
-    	if (ageStatus == "OK") {
-    		$("#age-check").empty();
-    		$("#age-check").append('<img src="img/tick.png" alt="OK">').fadeIn(500);
-    		ageStatusOK = true;
-    		if (paymentStatusOK == true) {
-    			$('#process-button').removeClass('disabled');
-    		}
-    	} else {
-    		//TODO ERROR
-    	}
+			
+	    	var ageStatus = data.age;
+	    	if (ageStatus == "OK") {
+	    		$("#age-check").empty();
+	    		$("#age-check").append('<img src="img/tick.png" alt="OK">').fadeIn(500);
+	    		ageStatusOK = true;
+	    		if (paymentStatusOK == true) {
+	    			$('#process-button').removeClass('disabled');
+	    		}
+	    	} else {
+	    		//TODO ERROR
+	    	}
+		}
 
         console.log(data);
 };
@@ -154,8 +172,28 @@ var insertItem = function(data) {
     filled = filled.replace("<<QUANTITY>>", data.quantity);
     filled = filled.replace("<<PRICE>>", price);
     
-    //$(".container").append(filled).last().hide().fadeIn();
     $('<div class="row item"></div>').appendTo(".container").hide().append(filled).fadeIn('slow');
+    $('#item' + data.id).on('click', function() {
+    	var thisOrder = allOrders[data.id];
+
+    	var unitprice = parseFloat(thisOrder.price);
+		var quantity = parseFloat(thisOrder.quantity);
+		orderPrice = getOrderPrice(unitprice, quantity);
+
+    	updateContent("#ordered-item", thisOrder.item);
+    	updateContent("#ordered-qty", thisOrder.quantity);
+    	updateContent("#ordered-price", formatAmount(orderPrice));
+    	updateContent("#order-id", thisOrder.table);
+
+    	$("#discount-percent").text("");
+    	$("#discount-title").text("");
+    	$("#discount-amount").text("");
+    	updateContent("#price-final", formatAmount(orderPrice));
+
+        $("#myModal").modal();
+
+    });
+
 };
 
 var socket = io.connect('http://localhost:4200');
