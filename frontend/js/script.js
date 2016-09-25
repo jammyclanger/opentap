@@ -93,6 +93,10 @@ var getCharacteristics = function(data) {
         console.log(data);
 };
 
+var buy = function() {
+    globalSocket.emit('buy', { number: 1, type: 'beer' });
+}
+
 var getPaymentStatus = function(data) {
 	if (data.status == "OK") {
 
@@ -155,6 +159,7 @@ var insertItem = function(data) {
 };
 
 var socket = io.connect('http://localhost:4200');
+        globalSocket = socket;
         socket.on('connect', function(data) {
             socket.emit('join', 'Hello World from client');
 
