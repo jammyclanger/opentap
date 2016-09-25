@@ -32,16 +32,19 @@ var paymentStatusOK = false;
 var allOrders = [];
 
 var getOrder = function(data) {
-        insertItem(data);
 		
         var thisOrder = {
         	quantity: data.quantity, 
         	item: data.item,
         	price: data.price,
-        	table: data.table
+        	table: data.table,
+            tender: data.tender,
+            id: data.id,
+            paid: false
         };
 
         allOrders[data.id] =  thisOrder;  
+        insertItem(data);
 
    //      if (data.id % 2 == 0) {
    //          console.log("adding item one modal");
@@ -88,12 +91,13 @@ var getCharacteristics = function(data) {
 		console.log('orderid: ' + $('#order-id').text());
 		console.log($('#myModal').hasClass('in'));
 
-		if ($('#myModal').hasClass('in') && $('#order-id').text() == data.id) {
+		if ($('#myModal').hasClass('in') && $('#magicId').text() == data.id) {
 			console.log('updating discount');
 			updateContent("#discount-percent", formatDiscount(discount));
 	    	updateContent("#discount-title", "Lady's Night Discount");
 	    	updateContent("#discount-amount", formatAmount(discountAmount));
 	    	updateContent("#price-final", formatAmount(total));
+            updateContent("#price" + data.id, formatAmount(total));
 			
 	    	var ageStatus = data.age;
 	    	if (ageStatus == "OK") {
@@ -117,10 +121,13 @@ var buy = function() {
 
 var getPaymentStatus = function(data) {
 	if (data.status == "OK") {
+        
+        allOrders[data.id].paid = true;
 
-		$("#payment-check").empty();
-    	$("#payment-check").append('<img src="img/tick.png" alt="OK">').fadeIn(500);
-
+        if ($('#myModal').hasClass('in') && $('#magicId').text() == data.id) {
+    	   $("#payment-check").html('<img src="img/tick.png" alt="OK">').fadeIn(500);
+        }
+            
         $("#paid" + data.id).html('<img src="img/tick-black.png" height="35" "width="35" />');
 
 		paymentStatusOK = true;
@@ -132,7 +139,7 @@ var getPaymentStatus = function(data) {
 	}
 };
 
-var insertItem = function(data) {
+var insertItem = function(incoming) {
     var template =         '<div id="item<<ORDER_ID>>">' +
             '<div class="col s12">' +
                 '<div class="col s2">' +
@@ -155,6 +162,7 @@ var insertItem = function(data) {
                 '</div>' +
             '</div>' +
         '</div>';
+    var data = allOrders[incoming.id];
     
     var price = formatAmount((data.quantity * data.price)/100);
     
@@ -184,12 +192,35 @@ var insertItem = function(data) {
     	updateContent("#ordered-qty", thisOrder.quantity);
     	updateContent("#ordered-price", formatAmount(orderPrice));
     	updateContent("#order-id", thisOrder.table);
+        updateContent("#magicId", thisOrder.id);
 
     	$("#discount-percent").text("");
     	$("#discount-title").text("");
     	$("#discount-amount").text("");
     	updateContent("#price-final", formatAmount(orderPrice));
+        
+        console.log("going to add age");
+        if (thisOrder.age != null) {
+            if (thisOrder.age == "OK") {
+                console.log("adding age ok");
+                $("#age-check").html('<img src="img/tick.png" alt="OK">');
+            } else {
+                console.log("adding age not ok");
+                $("#age-check").html('<div class="line"></div><div class="line"></div><div class="line"></div>');
+            }
+        } else {
+                $("#age-check").html('<div class="line"></div><div class="line"></div><div class="line"></div>');
+        }
 
+        console.log("going to add paid");
+        if (!thisOrder.paid) {
+                console.log("adding paid not ok");
+                $("#payment-check").html('<div class="line"></div><div class="line"></div><div class="line"></div>');
+        } else {
+                console.log("adding paid ok");
+                $("#payment-check").html('<img src="img/tick.png" alt="OK">');
+        }
+        
         $("#myModal").modal();
 
     });
