@@ -164,7 +164,7 @@ var insertItem = function(incoming) {
         '</div>';
     var data = allOrders[incoming.id];
     
-    var price = formatAmount((data.quantity * data.price)/100);
+    var price = "£3.85";
     
     console.log(JSON.stringify(data));
     var filled = template.replace("<<ORDER_ID>>", data.id);
